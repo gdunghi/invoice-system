@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-purple: #7B5EA7;
+  --brand-light: #E8DFF5;
+  --brand-dark: #4A3570;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Sarabun', sans-serif;
+  background-color: #F5F5F7;
+  color: #1a1a1a;
+}
+
+/* Invoice print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .invoice-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-purple);
+  border-radius: 3px;
+}
