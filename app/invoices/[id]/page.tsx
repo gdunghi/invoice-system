@@ -63,11 +63,12 @@ export default function InvoiceViewPage() {
 
       for (let i = 0; i < canvases.length; i++) {
         const canvas = await html2canvas(canvases[i] as HTMLElement, {
-          scale: 2,
+          scale: 4,
           useCORS: true,
           logging: false,
           width: 794, // A4 at 96dpi
           height: 1123,
+          backgroundColor: '#ffffff',
         })
 
         const imgData = canvas.toDataURL('image/jpeg', 0.95)
