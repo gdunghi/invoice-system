@@ -374,6 +374,15 @@ formatDate(dateStr)
    - Field disabled when status = 'paid' or 'cancelled'
    - Only included in update payload when allowed
 
+5. **Report Copy Pages** ✅
+   - Expanded invoice report to 4 pages
+   - Labels per page:
+     - Page 1: ต้นฉบับ(สำหรับลูกค้า)
+     - Page 2: สำเนา(สำหรับลูกค้า)
+     - Page 3: สำเนา(สำหรับฝ่ายขาย)
+     - Page 4: สำเนา(สำหรับบัญชี)
+   - Page numbers shown in the top-right badge
+
 ### Code Quality
 - TypeScript strict mode
 - Proper type definitions for all data
@@ -455,4 +464,3 @@ Seller: จิรายุ โพธิสาร
 **Last Updated:** March 2, 2026  
 **System Version:** 0.1.0  
 **Status:** ✅ Production Ready
-

@@ -57,7 +57,7 @@ export default function InvoiceViewPage() {
       const element = invoiceRef.current
       if (!element) return
 
-      // Render both copies
+      // Render all copies
       const canvases = element.querySelectorAll('.invoice-page')
       const pdf = new jsPDF('p', 'mm', 'a4')
 
@@ -147,14 +147,44 @@ export default function InvoiceViewPage() {
 
       {/* Invoice Preview */}
       <div className="py-8 flex flex-col items-center gap-6" ref={invoiceRef}>
-        {/* Original copy */}
+        {/* Page 1 */}
         <div className="shadow-xl">
-          <InvoiceTemplate invoice={invoice} items={items} copy="ต้นฉบับ" />
+          <InvoiceTemplate
+            invoice={invoice}
+            items={items}
+            copyLabel="ต้นฉบับ(สำหรับลูกค้า)"
+            pageNo={1}
+          />
         </div>
 
-        {/* Copy */}
+        {/* Page 2 */}
         <div className="shadow-xl">
-          <InvoiceTemplate invoice={invoice} items={items} copy="สำเนา" />
+          <InvoiceTemplate
+            invoice={invoice}
+            items={items}
+            copyLabel="สำเนา(สำหรับลูกค้า)"
+            pageNo={2}
+          />
+        </div>
+
+        {/* Page 3 */}
+        <div className="shadow-xl">
+          <InvoiceTemplate
+            invoice={invoice}
+            items={items}
+            copyLabel="สำเนา(สำหรับฝ่ายขาย)"
+            pageNo={3}
+          />
+        </div>
+
+        {/* Page 4 */}
+        <div className="shadow-xl">
+          <InvoiceTemplate
+            invoice={invoice}
+            items={items}
+            copyLabel="สำเนา(สำหรับบัญชี)"
+            pageNo={4}
+          />
         </div>
       </div>
     </div>
