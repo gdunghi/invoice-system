@@ -20,6 +20,11 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
+### 3. Tests
+```bash
+npm test
+```
+
 ---
 
 ## 📁 โครงสร้างโปรเจกต์

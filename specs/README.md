@@ -63,6 +63,24 @@ Welcome to the Invoice System documentation! This folder contains comprehensive 
 
 ---
 
+### 4. **TESTING.md** 🧪 TEST DOCUMENTATION
+**Purpose:** Complete testing guide and best practices
+
+**Contains:**
+- Test setup and configuration
+- Running tests (npm test, watch mode)
+- Test coverage breakdown (20 tests)
+- Testing examples (helpers, components, pages)
+- Mock strategies and patterns
+- Best practices (AAA pattern, semantic queries)
+- Debugging tests guide
+- Known issues (React act warnings)
+- Future test improvements
+
+**Best for:** Writing tests, understanding test coverage, debugging test failures
+
+---
+
 ## 🚀 Quick Links by Role
 
 ### 👔 Product Manager / Business User
@@ -85,6 +103,12 @@ Welcome to the Invoice System documentation! This folder contains comprehensive 
 1. Check: **DEVELOPER_GUIDE.md** - "Debugging Tips" section
 2. Reference: **API_REFERENCE.md** - "Error Handling" section
 3. Context: **SYSTEM_OVERVIEW.md** - relevant flow diagram
+
+### 🧪 Writing Tests
+1. Start with: **TESTING.md** - "Test Coverage" section
+2. Reference: **TESTING.md** - "Writing Tests - Examples"
+3. Follow: **TESTING.md** - "Testing Best Practices"
+4. Run: `npm test` or `npm run test:watch`
 
 ---
 
@@ -115,15 +139,25 @@ specs/
 │   ├── Performance
 │   └── Deployment
 │
-└── API_REFERENCE.md
-    ├── Quick Reference Card
-    ├── API Function Reference
-    ├── Helper Functions
+├── API_REFERENCE.md
+│   ├── Quick Reference Card
+│   ├── API Function Reference
+│   ├── Helper Functions
+│   ├── Testing Examples
+│   ├── Data Models
+│   ├── Error Handling
+│   ├── Common Workflows
+│   └── Type Definitions
+│
+└── TESTING.md
+    ├── Test Setup
+    ├── Running Tests
+    ├── Test Coverage
     ├── Testing Examples
-    ├── Data Models
-    ├── Error Handling
-    ├── Common Workflows
-    └── Type Definitions
+    ├── Mock Strategies
+    ├── Best Practices
+    ├── Debugging Tests
+    └── Known Issues
 ```
 
 ---
@@ -301,4 +335,3 @@ Make sure you've read:
 ---
 
 *For the latest updates and to report documentation issues, check the project repository.*
-

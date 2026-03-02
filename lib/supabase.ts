@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const isTestEnv = process.env.NODE_ENV === 'test'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || (isTestEnv ? 'http://localhost' : undefined)
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (isTestEnv ? 'test' : undefined)
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
 
 export type Database = {
   public: {

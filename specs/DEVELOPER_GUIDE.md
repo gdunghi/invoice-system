@@ -196,7 +196,7 @@ Footer (Notes)
 ```
 [User enters quantity + unit_price for each item]
   ↓
-[calculateTotals(items, vat_rate, withholding_tax_rate)]
+[calculateTotals(items, vat_rate, withholding_rate)]
   ↓
 subtotal = Σ(quantity × unit_price)
 vat_amount = subtotal × (vat_rate / 100)
@@ -402,6 +402,187 @@ CREATE POLICY "Users can create own invoices" ON invoices
 // Lazy load PDF generation
 // Use image optimization for invoices
 ```
+
+---
+
+## 🚀 Deployment Checklist
+
+- [ ] Set .env.local in production
+- [ ] Run database schema.sql in production Supabase
+- [ ] Enable proper RLS policies
+- [ ] Set up authentication
+- [ ] Add error monitoring (Sentry)
+- [ ] Configure email service (SendGrid, Resend)
+- [ ] Add rate limiting to API routes
+- [ ] Set up backups
+- [ ] Test PDF export quality
+- [ ] Configure CDN for assets
+
+---
+
+## 🧪 Testing
+
+### Test Setup
+
+The project uses **Vitest** + **React Testing Library** for unit and integration tests.
+
+**Test Configuration:**
+```typescript
+// vitest.config.ts
+- Environment: jsdom
+- Setup: tests/setup.ts (mocks Next.js router, window APIs)
+- Alias: @supabase/supabase-js → tests/mocks/supabase-js.ts
+```
+
+**Mock Strategy:**
+- Next.js navigation mocked in setup
+- Supabase client aliased to lightweight test mock
+- window.confirm, window.alert, window.print stubbed
+
+### Running Tests
+
+```bash
+# Run all tests once
+npm test
+
+# Watch mode (re-run on file changes)
+npm run test:watch
+```
+
+### Test Coverage
+
+**1. Helper Functions (`tests/lib/api.test.ts`)**
+- ✅ `calculateTotals()` - VAT + withholding tax math
+- ✅ `numberToThaiWords()` - Zero, decimals, large numbers
+- ✅ `formatCurrency()` - Thai number format
+- ✅ `formatDate()` - Thai Buddhist calendar
+
+**2. Data Access (`tests/lib/api.test.ts`)**
+- ✅ `getInvoices()` - Fetch and order by date
+- ✅ `getInvoiceById()` - Fetch invoice + items
+- ✅ `generateInvoiceNumber()` - Yearly sequence
+- ✅ `createInvoice()` - Insert invoice + items
+- ✅ `updateInvoice()` - Update + replace items
+- ✅ `deleteInvoice()` - Remove invoice
+- ✅ `updateInvoiceStatus()` - Change status
+- ✅ `getCustomers()` / `createCustomer()` - Customer CRUD
+
+**3. Components (`tests/components/`)**
+- ✅ **InvoiceForm.test.tsx**
+  - Add/remove line items
+  - Recalculate totals on input change
+  - Submit new invoice and redirect
+- ✅ **InvoiceTemplate.test.tsx**
+  - Render invoice details
+  - Display totals and Thai words
+  - Show copy label and page number
+
+**4. Pages (`tests/pages/`)**
+- ✅ **home.test.tsx**
+  - Render invoice list from API
+  - Delete invoice with confirmation
+- ✅ **invoice-view.test.tsx**
+  - Load invoice data
+  - Mark as paid
+- ✅ **invoice-edit.test.tsx**
+  - Load invoice for editing
+  - Display invoice number in header
+
+### Writing New Tests
+
+**Example: Testing a Helper Function**
+```typescript
+import { describe, expect, it } from 'vitest'
+import { calculateTotals } from '@/lib/api'
+
+describe('calculateTotals', () => {
+  it('applies VAT and withholding correctly', () => {
+    const result = calculateTotals(
+      [{ quantity: 2, unit_price: 100 }],
+      7,  // VAT rate
+      3   // Withholding rate
+    )
+    
+    expect(result.subtotal).toBe(200)
+    expect(result.vat_amount).toBeCloseTo(14)
+    expect(result.withholding_tax_amount).toBeCloseTo(6)
+    expect(result.total).toBeCloseTo(208)
+  })
+})
+```
+
+**Example: Testing a Component**
+```typescript
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
+
+const mockGetCustomers = vi.fn()
+vi.mock('@/lib/api', () => ({
+  getCustomers: mockGetCustomers,
+}))
+
+describe('MyComponent', () => {
+  it('loads data on mount', async () => {
+    mockGetCustomers.mockResolvedValue([{ id: '1', name: 'Test' }])
+    
+    render(<MyComponent />)
+    
+    expect(await screen.findByText('Test')).toBeInTheDocument()
+  })
+})
+```
+
+### Test Best Practices
+
+1. **Arrange-Act-Assert Pattern**
+   ```typescript
+   // Arrange: Set up test data and mocks
+   const mockData = { id: '1' }
+   mockGetData.mockResolvedValue(mockData)
+   
+   // Act: Perform the action
+   render(<Component />)
+   await userEvent.click(screen.getByRole('button'))
+   
+   // Assert: Verify the outcome
+   expect(mockGetData).toHaveBeenCalled()
+   ```
+
+2. **Use Semantic Queries**
+   - Prefer `getByRole`, `getByLabelText`, `getByText` over `getByTestId`
+   - Query by what users see, not implementation details
+
+3. **Handle Async Operations**
+   ```typescript
+   // Wait for element to appear
+   expect(await screen.findByText('Loaded')).toBeInTheDocument()
+   
+   // Wait for assertion
+   await waitFor(() => {
+     expect(mockFn).toHaveBeenCalled()
+   })
+   ```
+
+4. **Mock External Dependencies**
+   - Mock API calls to avoid real network requests
+   - Mock navigation to avoid router errors
+   - Stub browser APIs (window.print, window.confirm)
+
+5. **Test User Behavior, Not Implementation**
+   ```typescript
+   // ❌ Bad: Testing implementation
+   expect(component.state.count).toBe(1)
+   
+   // ✅ Good: Testing user-visible behavior
+   expect(screen.getByText('Count: 1')).toBeInTheDocument()
+   ```
+
+### Known Test Warnings
+
+- React `act(...)` warnings appear for some async state updates
+- These are cosmetic and don't affect test functionality
+- All 20 tests pass successfully
 
 ---
 
