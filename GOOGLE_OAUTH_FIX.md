@@ -11,8 +11,8 @@
 **Your secrets were exposed in scratch file. MUST ROTATE IMMEDIATELY:**
 
 ```
-Old SUPABASE_SERVICE_ROLE_KEY: sb_secret_G-lajO6pv4gSC8Vex0rysw_qrgniAVe
-Old GOOGLE_CLIENT_SECRET: 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
+Old SUPABASE_SERVICE_ROLE_KEY: 
+Old GOOGLE_CLIENT_SECRET:
 ```
 
 ### Step 1: Rotate Supabase Keys

@@ -2,9 +2,6 @@ import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 
-// Mark as dynamic since we access request.headers
-export const dynamic = 'force-dynamic'
-
 export async function GET(request: NextRequest) {
   try {
     // Get token from Authorization header
