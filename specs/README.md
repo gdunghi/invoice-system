@@ -81,6 +81,20 @@ Welcome to the Invoice System documentation! This folder contains comprehensive 
 
 ---
 
+### 5. **features/** 📦 FEATURE SPECIFICATIONS
+**Purpose:** Detailed specs for upcoming features
+
+**Contains:**
+- **REPORTS_DASHBOARD.md** - Dashboard, sales reports, analytics
+- **TAX_DISCOUNT.md** - Discount system, multiple tax rates
+- **EMAIL_NOTIFICATIONS.md** - Auto email invoices, reminders
+- **AUTHENTICATION.md** - Login, roles, permissions, audit logs
+- **README.md** - Feature index and roadmap
+
+**Best for:** Planning new features, implementation guides, roadmap tracking
+
+---
+
 ## 🚀 Quick Links by Role
 
 ### 👔 Product Manager / Business User
@@ -109,6 +123,13 @@ Welcome to the Invoice System documentation! This folder contains comprehensive 
 2. Reference: **TESTING.md** - "Writing Tests - Examples"
 3. Follow: **TESTING.md** - "Testing Best Practices"
 4. Run: `npm test` or `npm run test:watch`
+
+### 📦 Planning New Features
+1. Browse: **features/README.md** - See all planned features
+2. Read spec: **features/[FEATURE_NAME].md** - Full specification
+3. Check: Feature priority and estimated effort
+4. Follow: Implementation steps in the spec
+5. Track: Update status after completion
 
 ---
 
@@ -158,6 +179,31 @@ specs/
     ├── Best Practices
     ├── Debugging Tests
     └── Known Issues
+
+└── features/
+    ├── README.md (Feature Index & Roadmap)
+    ├── REPORTS_DASHBOARD.md
+    │   ├── Dashboard Design
+    │   ├── Reports (Sales, Customer, Overdue)
+    │   ├── Charts & Graphs
+    │   ├── Excel Export
+    │   └── Database Views
+    ├── TAX_DISCOUNT.md
+    │   ├── Discount Types (%, Amount)
+    │   ├── Multiple Tax Rates
+    │   ├── Calculation Logic
+    │   └── UI Components
+    ├── EMAIL_NOTIFICATIONS.md
+    │   ├── Email Templates
+    │   ├── Scheduled Reminders
+    │   ├── Activity Tracking
+    │   └── Cron Jobs
+    └── AUTHENTICATION.md
+        ├── Login/Logout
+        ├── User Roles (Admin/Accountant/Sales/Viewer)
+        ├── Permissions Matrix
+        ├── Multi-tenant
+        └── Audit Logs
 ```
 
 ---
