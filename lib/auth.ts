@@ -90,7 +90,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
   if (!user) return null
 
   // Get user profile from users table
