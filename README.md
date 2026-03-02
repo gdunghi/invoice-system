@@ -57,4 +57,3 @@ invoice-system/
 - Download PDF ต้นฉบับ + สำเนา
 - จัดการสถานะ draft/sent/paid/cancelled
 - Dashboard สถิติรายรับ
-- 
