@@ -1,13 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { upsertUserProfile } from '@/lib/auth'
 
-export default function AuthCallbackPage() {
+// This page uses client-side features only
+export const dynamic = 'force-dynamic'
+
+function AuthCallbackContent() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -17,9 +19,10 @@ export default function AuthCallbackPage() {
 
   async function handleCallback() {
     try {
-      // Check for error in URL
-      const error = searchParams.get('error')
-      const errorDescription = searchParams.get('error_description')
+      // Check for error in URL (from OAuth provider)
+      const params = new URLSearchParams(window.location.search)
+      const error = params.get('error')
+      const errorDescription = params.get('error_description')
 
       if (error) {
         throw new Error(errorDescription || error)
@@ -162,5 +165,9 @@ export default function AuthCallbackPage() {
   }
 
   return null
+}
+
+export default function AuthCallbackPage() {
+  return <AuthCallbackContent />
 }
 

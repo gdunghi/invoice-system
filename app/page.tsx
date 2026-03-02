@@ -121,7 +121,7 @@ export default function Home() {
             <div className="text-center py-16 text-gray-400">
               <FileText className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p className="font-medium">ยังไม่มี Invoice</p>
-              <p className="text-sm mt-1">คลิก "สร้าง Invoice ใหม่" เพื่อเริ่มต้น</p>
+              <p className="text-sm mt-1">คลิก สร้าง Invoice ใหม่ เพื่อเริ่มต้น</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
