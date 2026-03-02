@@ -375,13 +375,25 @@ formatDate(dateStr)
    - Only included in update payload when allowed
 
 5. **Report Copy Pages** ✅
-   - Expanded invoice report to 4 pages
-   - Labels per page:
+   - Expanded invoice report to 4 pages with labeled copies:
      - Page 1: ต้นฉบับ(สำหรับลูกค้า)
      - Page 2: สำเนา(สำหรับลูกค้า)
      - Page 3: สำเนา(สำหรับฝ่ายขาย)
      - Page 4: สำเนา(สำหรับบัญชี)
-   - Page numbers shown in the top-right badge
+   - Page numbers shown in top-right badge
+
+6. **Invoice Display Layout** ✅
+   - Changed "รวมเป็นเงิน" → "รวม"
+   - Added "รวมทั้งสิ้น" line (subtotal + VAT) after VAT row
+   - Shows correct calculation: subtotal + VAT before withholding tax deduction
+   - Updated totals section structure for clarity
+
+7. **PDF Split Export** ✅
+   - Split PDF download into 2 separate files:
+     - `BLxxxxxx-สำหรับลูกค้า.pdf` (Pages 1-2: ต้นฉบับ + สำเนาลูกค้า)
+     - `BLxxxxxx-สำหรับบัญชี.pdf` (Pages 3-4: สำเนาฝ่ายขาย + บัญชี)
+   - Both files downloaded simultaneously when "ดาวน์โหลด PDF" button is clicked
+   - Maintains high quality (4x scale, PNG format)
 
 ### Code Quality
 - TypeScript strict mode
@@ -391,76 +403,65 @@ formatDate(dateStr)
 
 ---
 
-## 🐛 Known Issues & Warnings
+## 📋 Updated Files (v0.1.1)
 
-### ESLint Warnings (Non-critical)
-- `app/page.tsx` - unescaped quotes in template literals (line 124)
-- `app/invoices/[id]/page.tsx` - missing `loadInvoice` dependency
-- `app/invoices/[id]/edit/page.tsx` - missing `router` dependency
-- TypeScript version mismatch: 5.9.3 vs supported <5.5.0
-
----
-
-## 📦 Dependencies
-
-### Main Dependencies
-- **next** 14.2.0 - React framework
-- **react** ^18 - UI library
-- **@supabase/supabase-js** ^2.39.0 - Database client
-- **html2canvas** ^1.4.1 - DOM to Canvas conversion
-- **jspdf** ^2.5.1 - PDF generation
-- **lucide-react** ^0.303.0 - Icons
-- **tailwindcss** ^3.4.0 - CSS framework
-
-### Dev Dependencies
-- **typescript** ^5 - Type checking
-- **eslint** ^8 - Code linting
-- **tailwindcss** ^3.4.0 - CSS framework
+| File | Changes |
+|------|---------|
+| `components/InvoiceTemplate.tsx` | Added `copyLabel` & `pageNo` props; updated totals layout |
+| `app/invoices/[id]/page.tsx` | Render 4 labeled pages; split PDF into 2 files with suffixes |
+| `components/InvoiceForm.tsx` | Updated form totals display (minor UI label change) |
 
 ---
 
-## 🔧 Environment Setup
+## 🎯 Key Features Summary
 
-### Required .env.local
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+### ✅ Core Features
+- CRUD Operations (Create, Read, Update, Delete)
+- Auto-generate Invoice Number (BL{year}{seq})
+- VAT & Withholding Tax Calculation
+- Dynamic Line Items
+- Customer Autocomplete
+- Status Management (draft → sent → paid/cancelled)
+- Edit invoice_number (only when status ≠ paid/cancelled)
+
+### ✅ Display & Export
+- View Invoice (4 labeled pages in browser)
+- Print Invoice (browser print with all 4 pages)
+- **Export PDF (Split into 2 files)**:
+  - Customer file: Pages 1-2
+  - Accounting file: Pages 3-4
+- PDF Quality: 4x scale, 192 DPI, PNG format
+
+### ✅ Thai Support
+- Thai Number Formatting
+- Thai Words Conversion (numberToThaiWords)
+- Date Formatting (Thai calendar)
+- Currency Formatting
+- Complete Thai UI
+
+---
+
+## 🔧 Technical Details
+
+### InvoiceTemplate Props
+```typescript
+interface InvoiceTemplateProps {
+  invoice: Invoice
+  items: InvoiceItem[]
+  copyLabel?: string    // Custom copy label
+  pageNo?: number       // Page number (1-4)
+}
 ```
 
-### Development
-```bash
-npm install
-npm run dev              # Start dev server
-npm run lint            # Run ESLint
-npm run build           # Build for production
-npm start               # Start production server
+### PDF Export Flow
 ```
-
----
-
-## 📝 Notes for Future Development
-
-1. **Authentication:** Currently no auth implemented. Consider adding Supabase Auth
-2. **Companies Table:** Not fully utilized yet. Can be used for company selection
-3. **Multi-language:** Currently Thai only. i18n can be added
-4. **Email Integration:** Can add email sending functionality
-5. **Recurring Invoices:** Can implement templates for recurring invoices
-6. **API Route Protection:** Consider adding API route authentication
-
----
-
-## 👤 Default Company
+Click "ดาวน์โหลด PDF"
+  ↓
+Render 4 invoice pages from DOM
+  ↓
+Create 2 PDFs in parallel:
+  - PDF 1: Pages [0, 1] → สำหรับลูกค้า
+  - PDF 2: Pages [2, 3] → สำหรับบัญชี
+  ↓
+Both files download simultaneously
 ```
-Name: บริษัท ทอมแอนด์เฟรนด์เทคโนโลยี จำกัด (สำนักงานใหญ่)
-Address: เลขที่ 265 ชั้น 2 ซอยเพชรเกษม 102/3 แขวงบางแคเหนือ เขตบางแค กรุงเทพมหานคร 10160
-Tax ID: 0105559192600
-Phone: 08-5492-2469
-Website: www.tomandfriends.co
-Seller: จิรายุ โพธิสาร
-```
-
----
-
-**Last Updated:** March 2, 2026  
-**System Version:** 0.1.0  
-**Status:** ✅ Production Ready

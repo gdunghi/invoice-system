@@ -490,7 +490,7 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
                   <span className="font-medium text-[#7B5EA7]">-฿{formatCurrency(withholding_tax_amount)}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold border-t border-gray-200 pt-2">
-                  <span>ยอดรวมทั้งสิ้น</span>
+                  <span>ยอดชำระ</span>
                   <span className="text-[#7B5EA7]">฿{formatCurrency(total)}</span>
                 </div>
               </div>

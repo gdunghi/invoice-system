@@ -518,71 +518,118 @@ const formatted = formatCurrency(paidTotal)
 
 ---
 
-## 🔍 Type Definitions Quick Reference
+## 📝 Latest Version Summary (v0.1.1)
 
+### What Changed
+**Invoice Display & Export Enhancements:**
+1. Report now shows 4 labeled pages (instead of 2)
+2. PDF export splits into 2 files with clear suffixes
+3. Improved totals section with clearer calculation display
+
+### Pages Layout
+```
+View Invoice Page (4 pages total):
+├── Page 1: ต้นฉบับ(สำหรับลูกค้า)
+├── Page 2: สำเนา(สำหรับลูกค้า)
+├── Page 3: สำเนา(สำหรับฝ่ายขาย)
+└── Page 4: สำเนา(สำหรับบัญชี)
+
+PDF Download (2 files):
+├── BLxxxxxx-สำหรับลูกค้า.pdf (Pages 1-2)
+└── BLxxxxxx-สำหรับบัญชี.pdf (Pages 3-4)
+```
+
+### Display Totals Structure
+```
+รวม                       [subtotal] บาท
+ภาษีมูลค่าเพิ่ม 7%         [vat_amount] บาท
+─────────────────────────────────────
+รวมทั้งสิ้น              [subtotal + vat] บาท
+หัก ณ ที่จ่าย 3%         -[withholding_tax] บาท
+═════════════════════════════════════
+จำนวนเงินรวมทั้งสิ้น      [total] บาท
+```
+
+---
+
+## Exporting to PDF
+
+### 📥 Importing `react-to-print`
 ```typescript
-// Full Invoice Type
-interface Invoice {
-  id: string
-  invoice_number: string
-  invoice_date: string
-  due_date: string | null
-  seller_name: string
-  company_name: string
-  company_address: string | null
-  company_tax_id: string | null
-  company_phone: string | null
-  company_website: string | null
-  customer_id: string | null
-  customer_name: string
-  customer_address: string | null
-  customer_tax_id: string | null
-  contact_name: string | null
-  contact_phone: string | null
-  contact_email: string | null
-  subtotal: number
-  vat_rate: number
-  vat_amount: number
-  withholding_tax_rate: number
-  withholding_tax_amount: number
-  total: number
-  notes: string | null
-  status: 'draft' | 'sent' | 'paid' | 'cancelled'
-  created_at: string
-  updated_at: string
-}
+import ReactToPrint from 'react-to-print'
+```
 
-// For Insert (excludes id, created_at, updated_at)
-type InvoiceInsert = Omit<Invoice, 'id' | 'created_at' | 'updated_at'>
-
-// Invoice Item Type
-interface InvoiceItem {
-  id: string
-  invoice_id: string
-  item_order: number
-  description: string
-  quantity: number
-  unit: string
-  unit_price: number
-  total: number
-  created_at: string
+### 🖨️ Printing Component
+```typescript
+class InvoiceComponent extends React.Component {
+  render() {
+    return (
+      <div>
+        {/* Invoice content */}
+      </div>
+    )
+  }
 }
+```
 
-// Customer Type
-interface Customer {
-  id: string
-  name: string
-  address: string | null
-  tax_id: string | null
-  contact_name: string | null
-  phone: string | null
-  email: string | null
-  created_at: string
+### 📄 Usage in Page
+```typescript
+const componentRef = useRef<ReactToPrintComponent>(null)
+
+<ReactToPrint
+  trigger={() => <button>Print this out!</button>}
+  content={() => componentRef.current}
+  pageStyle={`
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        margin: 20mm;
+      }
+    }
+  `}
+  onBeforeGetContent={() => {
+    // Calculate and set totals here if needed
+  }}
+/>
+
+<InvoiceComponent ref={componentRef} />
+```
+
+### 📑 Multi-Page Setup
+```typescript
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  body {
+    margin: 20mm;
+  }
+  .pagebreak {
+    page-break-before: always;
+  }
 }
+```
+
+### 📂 Downloading as PDF
+```typescript
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import InvoicePDF from './InvoicePDF'
+
+<PDFDownloadLink
+  document={<InvoicePDF invoice={invoiceData} />}
+  fileName="invoice.pdf"
+>
+  {({ blob, url, loading, error }) =>
+    loading ? 'Loading document...' : 'Download now!'
+  }
+</PDFDownloadLink>
 ```
 
 ---
 
 **Last Updated:** March 2, 2026  
-**Version:** 0.1.0
-
+**Version:** 0.1.1

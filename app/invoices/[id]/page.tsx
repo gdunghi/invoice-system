@@ -59,10 +59,9 @@ export default function InvoiceViewPage() {
 
       // Render all copies
       const canvases = element.querySelectorAll('.invoice-page')
-      const pdf = new jsPDF('p', 'mm', 'a4')
 
-      for (let i = 0; i < canvases.length; i++) {
-        const canvas = await html2canvas(canvases[i] as HTMLElement, {
+      const renderPage = async (index: number) => {
+        return html2canvas(canvases[index] as HTMLElement, {
           scale: 4,
           useCORS: true,
           logging: false,
@@ -70,13 +69,21 @@ export default function InvoiceViewPage() {
           height: 1123,
           backgroundColor: '#ffffff',
         })
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.95)
-        if (i > 0) pdf.addPage()
-        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297)
       }
 
-      pdf.save(`${invoice?.invoice_number}.pdf`)
+      const savePdf = async (indices: number[], suffix: string) => {
+        const pdf = new jsPDF('p', 'mm', 'a4')
+        for (let i = 0; i < indices.length; i++) {
+          const canvas = await renderPage(indices[i])
+          const imgData = canvas.toDataURL('image/jpeg', 0.95)
+          if (i > 0) pdf.addPage()
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297)
+        }
+        pdf.save(`${invoice?.invoice_number}-${suffix}.pdf`)
+      }
+
+      await savePdf([0, 1], 'สำหรับลูกค้า')
+      await savePdf([2, 3], 'สำหรับบัญชี')
     } catch (err: any) {
       alert('เกิดข้อผิดพลาด: ' + err.message)
     } finally {

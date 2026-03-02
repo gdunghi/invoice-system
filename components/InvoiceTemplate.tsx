@@ -244,12 +244,16 @@ export default function InvoiceTemplate({
         {/* Totals */}
         <div style={{ minWidth: '200px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', fontSize: '9pt' }}>
-            <span style={{ color: '#7B5EA7' }}>รวมเป็นเงิน</span>
+            <span style={{ color: '#7B5EA7' }}>รวม</span>
             <span style={{ fontWeight: 500 }}>{formatCurrency(invoice.subtotal)} บาท</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', fontSize: '9pt' }}>
             <span style={{ color: '#7B5EA7' }}>ภาษีมูลค่าเพิ่ม {invoice.vat_rate}%</span>
             <span style={{ fontWeight: 500 }}>{formatCurrency(invoice.vat_amount)} บาท</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', fontSize: '9pt', borderTop: '1px solid #e0e0e0', marginTop: '2px', paddingTop: '4px' }}>
+            <span style={{ color: '#7B5EA7', fontWeight: 600 }}>รวมทั้งสิ้น</span>
+            <span style={{ fontWeight: 600 }}>{formatCurrency(invoice.subtotal + invoice.vat_amount)} บาท</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', fontSize: '9pt' }}>
             <span style={{ color: '#7B5EA7' }}>หัก ณ ที่จ่าย {invoice.withholding_tax_rate}%</span>
@@ -266,7 +270,7 @@ export default function InvoiceTemplate({
             fontSize: '10pt',
             fontWeight: 700,
           }}>
-            <span style={{ color: '#7B5EA7' }}>จำนวนเงินรวมทั้งสิ้น</span>
+            <span style={{ color: '#7B5EA7' }}>ยอดชำระ</span>
             <span style={{ color: '#7B5EA7' }} className="ml-0.5">{formatCurrency(invoice.total)} บาท</span>
           </div>
         </div>
