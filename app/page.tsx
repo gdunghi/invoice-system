@@ -1,9 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getInvoices, deleteInvoice, formatCurrency, formatDate } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
 import { Invoice } from '@/lib/supabase'
-import { Plus, FileText, Eye, Trash2, Edit, CheckCircle, Clock, XCircle, Send } from 'lucide-react'
+import { Plus, FileText, Eye, Trash2, Edit, CheckCircle, Clock, XCircle, Send, LogOut } from 'lucide-react'
 
 const statusConfig = {
   draft: { label: 'ร่าง', color: 'bg-gray-100 text-gray-600', icon: Clock },
@@ -13,14 +15,32 @@ const statusConfig = {
 }
 
 export default function Home() {
+  const router = useRouter()
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [userName, setUserName] = useState<string>('')
 
   useEffect(() => {
-    loadInvoices()
+    checkAuthAndLoad()
   }, [])
+
+  async function checkAuthAndLoad() {
+    try {
+      // Check if user is logged in
+      const user = await getCurrentUser()
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      setUserName(user.full_name || user.email || 'User')
+      await loadInvoices()
+    } catch (err: any) {
+      console.error('Auth error:', err)
+      router.push('/login')
+    }
+  }
 
   async function loadInvoices() {
     try {
@@ -31,6 +51,16 @@ export default function Home() {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleLogout() {
+    const { signOut } = await import('@/lib/auth')
+    try {
+      await signOut()
+      router.push('/login')
+    } catch (err: any) {
+      console.error('Logout error:', err)
     }
   }
 
@@ -71,13 +101,33 @@ export default function Home() {
               <p className="text-xs text-gray-500">Tom and Friends Technology Co., Ltd.</p>
             </div>
           </div>
-          <Link
-            href="/invoices/new"
-            className="flex items-center gap-2 bg-[#7B5EA7] text-white px-4 py-2 rounded-lg hover:bg-[#6A4D96] transition-colors text-sm font-medium"
-          >
-            <Plus className="w-4 h-4" />
-            สร้าง Invoice ใหม่
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="text-right mr-2">
+              <p className="text-sm font-medium text-gray-700">{userName}</p>
+              <p className="text-xs text-gray-500">ผู้ใช้งาน</p>
+            </div>
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              📊 Dashboard
+            </Link>
+            <Link
+              href="/invoices/new"
+              className="flex items-center gap-2 bg-[#7B5EA7] text-white px-4 py-2 rounded-lg hover:bg-[#6A4D96] transition-colors text-sm font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              สร้าง Invoice ใหม่
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+              title="ออกจากระบบ"
+            >
+              <LogOut className="w-4 h-4" />
+              ออกจากระบบ
+            </button>
+          </div>
         </div>
       </header>
 

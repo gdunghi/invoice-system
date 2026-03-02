@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getInvoiceById } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
 import { Invoice, InvoiceItem } from '@/lib/supabase'
 import InvoiceForm from '@/components/InvoiceForm'
 import { ArrowLeft } from 'lucide-react'
@@ -15,20 +16,35 @@ export default function EditInvoicePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function load() {
-      try {
-        const data = await getInvoiceById(params.id as string)
-        setInvoice(data.invoice)
-        setItems(data.items)
-      } catch (err: any) {
-        alert('ไม่พบ Invoice')
-        router.push('/')
-      } finally {
-        setLoading(false)
+    checkAuthAndLoad()
+  }, [params.id])
+
+  async function checkAuthAndLoad() {
+    try {
+      const user = await getCurrentUser()
+      if (!user) {
+        router.push('/login?redirect=/invoices/' + params.id + '/edit')
+        return
       }
+      await load()
+    } catch (err) {
+      console.error('Auth error:', err)
+      router.push('/login?redirect=/invoices/' + params.id + '/edit')
     }
-    load()
-  }, [params.id, router])
+  }
+
+  async function load() {
+    try {
+      const data = await getInvoiceById(params.id as string)
+      setInvoice(data.invoice)
+      setItems(data.items)
+    } catch (err: any) {
+      alert('ไม่พบ Invoice')
+      router.push('/')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (loading) {
     return (

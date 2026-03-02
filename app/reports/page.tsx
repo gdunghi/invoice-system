@@ -138,9 +138,25 @@ export default function ReportsPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Reports</h1>
-          <p className="text-gray-600 mt-2">Analyze sales and customer data</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">Reports</h1>
+            <p className="text-gray-600 mt-2">Analyze sales and customer data</p>
+          </div>
+          <div className="flex gap-3">
+            <a
+              href="/"
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              📋 All Invoices
+            </a>
+            <a
+              href="/dashboard"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              📊 Dashboard
+            </a>
+          </div>
         </div>
 
         {/* Filter Section */}

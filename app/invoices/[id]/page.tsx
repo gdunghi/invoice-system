@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getInvoiceById, updateInvoiceStatus } from '@/lib/api'
+import { getCurrentUser } from '@/lib/auth'
 import { Invoice, InvoiceItem } from '@/lib/supabase'
 import InvoiceTemplate from '@/components/InvoiceTemplate'
 import { ArrowLeft, Printer, Download, Edit, CheckCircle } from 'lucide-react'
@@ -17,8 +18,22 @@ export default function InvoiceViewPage() {
   const invoiceRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    loadInvoice()
+    checkAuthAndLoad()
   }, [params.id])
+
+  async function checkAuthAndLoad() {
+    try {
+      const user = await getCurrentUser()
+      if (!user) {
+        router.push('/login?redirect=/invoices/' + params.id)
+        return
+      }
+      await loadInvoice()
+    } catch (err) {
+      console.error('Auth error:', err)
+      router.push('/login?redirect=/invoices/' + params.id)
+    }
+  }
 
   async function loadInvoice() {
     try {
