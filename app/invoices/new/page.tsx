@@ -1,8 +1,45 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import InvoiceForm from '@/components/InvoiceForm'
 import { ArrowLeft } from 'lucide-react'
+import { getCurrentUser } from '@/lib/auth'
 
 export default function NewInvoicePage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  async function checkAuth() {
+    try {
+      const user = await getCurrentUser()
+      if (!user) {
+        router.push('/login?redirect=/invoices/new')
+        return
+      }
+      setLoading(false)
+    } catch (err) {
+      console.error('Auth error:', err)
+      router.push('/login?redirect=/invoices/new')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
