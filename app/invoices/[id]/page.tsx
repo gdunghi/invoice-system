@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { getInvoiceById, updateInvoiceStatus } from '@/lib/api'
+import { getInvoiceById, updateInvoiceStatus, createTaxInvoiceFromInvoice } from '@/lib/api'
 import { getCurrentUser } from '@/lib/auth'
 import { Invoice, InvoiceItem } from '@/lib/supabase'
 import InvoiceTemplate from '@/components/InvoiceTemplate'
@@ -54,6 +54,20 @@ export default function InvoiceViewPage() {
     try {
       const updated = await updateInvoiceStatus(invoice.id, 'paid')
       setInvoice(updated)
+    } catch (err: any) {
+      alert('เกิดข้อผิดพลาด: ' + err.message)
+    }
+  }
+
+  async function handleCreateTaxInvoice() {
+    if (!invoice) return
+    if (invoice.document_type === 'tax_invoice') {
+      alert('ใบกำกับภาษีนี้เป็นใบกำกับภาษีแล้ว ไม่สามารถสร้างใบกำกับภาษีจากใบกำกับภาษีได้')
+      return
+    }
+    try {
+      const taxInvoice = await createTaxInvoiceFromInvoice(invoice.id)
+      router.push(`/invoices/${taxInvoice.id}/edit`)
     } catch (err: any) {
       alert('เกิดข้อผิดพลาด: ' + err.message)
     }
@@ -139,6 +153,14 @@ export default function InvoiceViewPage() {
               >
                 <CheckCircle className="w-4 h-4" />
                 ชำระแล้ว
+              </button>
+            )}
+            {invoice.document_type === 'invoice' && (
+              <button
+                onClick={handleCreateTaxInvoice}
+                className="flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors"
+              >
+                📋 สร้างใบกำกับภาษี
               </button>
             )}
             <Link

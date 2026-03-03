@@ -110,9 +110,11 @@ export default function InvoiceTemplate({
             lineHeight: 1.2,
             marginBottom: '2mm',
           }}>
-            ใบวางบิล/ใบแจ้งหนี้
+            {invoice.document_type === 'tax_invoice' ? 'ใบกำกับภาษี' : 'ใบวางบิล/ใบแจ้งหนี้'}
           </h1>
-          <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>{copyLabel}</p>
+          <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>
+            {invoice.document_type === 'tax_invoice' ? 'Tax Invoice' : copyLabel}
+          </p>
 
           <div style={{
             borderTop: '2px solid #7B5EA7',
@@ -136,6 +138,14 @@ export default function InvoiceTemplate({
                   <td style={{ color: '#666' }}>ผู้ขาย</td>
                   <td>{invoice.seller_name}</td>
                 </tr>
+                {invoice.document_type === 'tax_invoice' && invoice.referenced_invoice_number && (
+                    <tr>
+                      <td style={{ color: '#666', paddingTop: '4px' }}>อ้างอิงเลข Invoice</td>
+                      <td style={{ fontWeight: 600, color: '#7B5EA7', paddingTop: '4px' }}>
+                        {invoice.referenced_invoice_number}
+                      </td>
+                    </tr>
+                )}
               </tbody>
             </table>
           </div>

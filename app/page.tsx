@@ -112,13 +112,22 @@ export default function Home() {
             >
               📊 Dashboard
             </Link>
-            <Link
-              href="/invoices/new"
-              className="flex items-center gap-2 bg-[#7B5EA7] text-white px-4 py-2 rounded-lg hover:bg-[#6A4D96] transition-colors text-sm font-medium"
-            >
-              <Plus className="w-4 h-4" />
-              สร้าง Invoice ใหม่
-            </Link>
+            <div className="flex gap-2">
+              <Link
+                href="/invoices/new?type=invoice"
+                className="flex items-center gap-2 bg-[#7B5EA7] text-white px-4 py-2 rounded-lg hover:bg-[#6A4D96] transition-colors text-sm font-medium"
+              >
+                <Plus className="w-4 h-4" />
+                สร้าง Invoice
+              </Link>
+              <Link
+                href="/invoices/new?type=tax_invoice"
+                className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+              >
+                <Plus className="w-4 h-4" />
+                สร้าง Tax Invoice
+              </Link>
+            </div>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
@@ -193,9 +202,12 @@ export default function Home() {
                     return (
                       <tr key={invoice.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
-                          <span className="font-mono text-sm font-medium text-[#7B5EA7]">
-                            {invoice.invoice_number}
-                          </span>
+                          <div>
+                            <p className="font-medium text-gray-900">{invoice.invoice_number}</p>
+                            <p className="text-xs text-gray-500">
+                              {invoice.document_type === 'tax_invoice' ? '(ใบกำกับภาษี)' : '(Invoice)'}
+                            </p>
+                          </div>
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-medium text-gray-900 line-clamp-1">{invoice.customer_name}</p>

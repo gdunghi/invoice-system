@@ -44,6 +44,83 @@ export async function generateInvoiceNumber(): Promise<string> {
   return `BL${year}${seq}`
 }
 
+export async function generateTaxInvoiceNumber(): Promise<string> {
+  const year = new Date().getFullYear()
+  const { count } = await supabase
+    .from('invoices')
+    .select('*', { count: 'exact', head: true })
+    .eq('document_type', 'tax_invoice')
+    .gte('created_at', `${year}-01-01`)
+    .lte('created_at', `${year}-12-31`)
+
+  const seq = ((count || 0) + 1).toString().padStart(6, '0')
+  return `RE${year}${seq}`
+}
+
+export async function createTaxInvoiceFromInvoice(
+  invoiceId: string
+): Promise<Invoice> {
+  // Get source invoice with items
+  const { invoice: sourceInvoice, items: sourceItems } = await getInvoiceById(invoiceId)
+
+  if (!sourceInvoice) throw new Error('Invoice not found')
+
+  // Generate new tax invoice number
+  const invoice_number = await generateTaxInvoiceNumber()
+
+  // Create new tax invoice
+  const { data: newInvoice, error } = await supabase
+    .from('invoices')
+    .insert({
+      invoice_number,
+      invoice_date: sourceInvoice.invoice_date,
+      due_date: sourceInvoice.due_date,
+      seller_name: sourceInvoice.seller_name,
+      company_name: sourceInvoice.company_name,
+      company_address: sourceInvoice.company_address,
+      company_tax_id: sourceInvoice.company_tax_id,
+      company_phone: sourceInvoice.company_phone,
+      company_website: sourceInvoice.company_website,
+      customer_id: sourceInvoice.customer_id,
+      customer_name: sourceInvoice.customer_name,
+      customer_address: sourceInvoice.customer_address,
+      customer_tax_id: sourceInvoice.customer_tax_id,
+      contact_name: sourceInvoice.contact_name,
+      contact_phone: sourceInvoice.contact_phone,
+      contact_email: sourceInvoice.contact_email,
+      vat_rate: sourceInvoice.vat_rate,
+      withholding_tax_rate: sourceInvoice.withholding_tax_rate,
+      document_type: 'tax_invoice',
+      referenced_invoice_number: invoiceId,
+      notes: sourceInvoice.notes,
+      status: 'draft',
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+
+  // Clone invoice items
+  if (sourceItems.length > 0) {
+    const itemsWithId = sourceItems.map((item, index) => ({
+      description: item.description,
+      quantity: item.quantity,
+      unit: item.unit,
+      unit_price: item.unit_price,
+      invoice_id: newInvoice.id,
+      item_order: index + 1,
+    }))
+
+    const { error: itemsError } = await supabase
+      .from('invoice_items')
+      .insert(itemsWithId)
+
+    if (itemsError) throw itemsError
+  }
+
+  return newInvoice as Invoice
+}
+
 export async function createInvoice(
   invoiceData: Omit<InvoiceInsert, 'invoice_number'>,
   items: Omit<InvoiceItemInsert, 'invoice_id'>[]
