@@ -67,7 +67,7 @@ export default function EditInvoicePage() {
           </div>
         </div>
       </header>
-      {invoice && <InvoiceForm invoice={invoice} items={items} />}
+      {invoice && <InvoiceForm invoice={invoice} items={items} documentType={invoice.document_type}/>}
     </div>
   )
 }
