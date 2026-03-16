@@ -15,7 +15,7 @@ function AuthCallbackContent() {
 
   useEffect(() => {
     handleCallback()
-  }, [])
+  })
 
   async function handleCallback() {
     try {

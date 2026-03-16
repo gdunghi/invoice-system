@@ -1,11 +1,15 @@
 import { supabase } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
+import {headers} from 'next/headers';
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
     // Get token from Authorization header
-    const authHeader = request.headers.get('authorization')
+    const headersList = await headers()
+    const authHeader = headersList.get('authorization')
     if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

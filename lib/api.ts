@@ -53,7 +53,7 @@ export async function generateTaxInvoiceNumber(): Promise<string> {
     .gte('created_at', `${year}-01-01`)
     .lte('created_at', `${year}-12-31`)
 
-  const seq = ((count || 0) + 1).toString().padStart(6, '0')
+  const seq = ((count || 0) + 1).toString().padStart(3, '0')
   return `RE${year}${seq}`
 }
 
@@ -91,7 +91,7 @@ export async function createTaxInvoiceFromInvoice(
       vat_rate: sourceInvoice.vat_rate,
       withholding_tax_rate: sourceInvoice.withholding_tax_rate,
       document_type: 'tax_invoice',
-      referenced_invoice_number: invoiceId,
+      referenced_invoice_number: sourceInvoice.invoice_number,
       notes: sourceInvoice.notes,
       status: 'draft',
     })

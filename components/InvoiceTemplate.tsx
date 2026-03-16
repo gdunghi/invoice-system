@@ -110,7 +110,7 @@ export default function InvoiceTemplate({
             lineHeight: 1.2,
             marginBottom: '2mm',
           }}>
-            {invoice.document_type === 'tax_invoice' ? 'ใบกำกับภาษี' : 'ใบวางบิล/ใบแจ้งหนี้'}
+            {invoice.document_type === 'tax_invoice' ? 'ใบเสร็จรับเงิน/ใบกำกับภาษี' : 'ใบวางบิล/ใบแจ้งหนี้'}
           </h1>
           <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>
             {invoice.document_type === 'tax_invoice' ? 'Tax Invoice' : copyLabel}
@@ -127,12 +127,16 @@ export default function InvoiceTemplate({
                   <td style={{ fontWeight: 600 }}>{invoice.invoice_number}</td>
                 </tr>
                 <tr>
-                  <td style={{ color: '#666', paddingBottom: '2px' }}>วันที่</td>
+                  <td style={{ color: '#666', paddingBottom: '2px' }}>
+                    {invoice.document_type === 'tax_invoice' ? 'วันที่รับเงิน' : 'วันที่' }
+                  </td>
                   <td>{formatDate(invoice.invoice_date)}</td>
                 </tr>
                 <tr>
-                  <td style={{ color: '#666', paddingBottom: '2px' }}>ครบกำหนด</td>
-                  <td>{invoice.due_date ? formatDate(invoice.due_date) : '-'}</td>
+                  <td style={{ color: '#666', paddingBottom: '2px' }}>
+                    {invoice.document_type === 'tax_invoice' ? '': 'ครบกำหนด'}
+                  </td>
+                  <td>{invoice.document_type === 'invoice' && invoice.due_date ? formatDate(invoice.due_date) : ''}</td>
                 </tr>
                 <tr>
                   <td style={{ color: '#666' }}>ผู้ขาย</td>
