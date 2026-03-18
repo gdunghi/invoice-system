@@ -113,7 +113,7 @@ export default function InvoiceTemplate({
             {invoice.document_type === 'tax_invoice' ? 'ใบเสร็จรับเงิน/ใบกำกับภาษี' : 'ใบวางบิล/ใบแจ้งหนี้'}
           </h1>
           <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>
-            {invoice.document_type === 'tax_invoice' ? 'Tax Invoice' : copyLabel}
+            {copyLabel}
           </p>
 
           <div style={{

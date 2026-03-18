@@ -196,7 +196,7 @@ export default function InvoiceViewPage() {
           <InvoiceTemplate
             invoice={invoice}
             items={items}
-            copyLabel="ต้นฉบับ(สำหรับลูกค้า)"
+            copyLabel="ต้นฉบับ (สำหรับลูกค้า)"
             pageNo={1}
           />
         </div>
@@ -206,7 +206,7 @@ export default function InvoiceViewPage() {
           <InvoiceTemplate
             invoice={invoice}
             items={items}
-            copyLabel="สำเนา(สำหรับลูกค้า)"
+            copyLabel="สำเนา (สำหรับลูกค้า)"
             pageNo={2}
           />
         </div>
@@ -216,7 +216,7 @@ export default function InvoiceViewPage() {
           <InvoiceTemplate
             invoice={invoice}
             items={items}
-            copyLabel="สำเนา(สำหรับฝ่ายขาย)"
+            copyLabel="สำเนา (สำหรับฝ่ายขาย)"
             pageNo={3}
           />
         </div>
@@ -226,7 +226,7 @@ export default function InvoiceViewPage() {
           <InvoiceTemplate
             invoice={invoice}
             items={items}
-            copyLabel="สำเนา(สำหรับบัญชี)"
+            copyLabel="สำเนา (สำหรับบัญชี)"
             pageNo={4}
           />
         </div>

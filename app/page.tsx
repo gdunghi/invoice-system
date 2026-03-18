@@ -46,7 +46,9 @@ export default function Home() {
     try {
       setLoading(true)
       const data = await getInvoices()
-      setInvoices(data)
+      const invoiceSent = data.filter(inv => inv.document_type === 'invoice' && inv.status === 'sent')
+      const taxInvoiceSent = data.filter(inv => inv.document_type === 'tax_invoice')
+      setInvoices(invoiceSent.concat(taxInvoiceSent))
     } catch (err: any) {
       setError(err.message)
     } finally {
