@@ -301,17 +301,21 @@ export default function InvoiceTemplate({
       {/* Signature section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20mm' }}>
         <div style={{ textAlign: 'center', minWidth: '160px' }}>
-          <p style={{ fontSize: '9pt', fontWeight: 600, marginBottom: '12mm' }}>ในนาม {invoice.customer_name}</p>
-          <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
-            <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
-              <tbody>
-                <tr>
-                  <td>ผู้รับวางบิล</td>
-                  <td>วันที่</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {invoice.document_type === 'invoice' && (
+              <div>
+                <p style={{ fontSize: '9pt', fontWeight: 600, marginBottom: '12mm' }}>ในนาม {invoice.customer_name}</p>
+                <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
+                  <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
+                    <tbody>
+                    <tr>
+                      <td>ผู้รับวางบิล</td>
+                      <td>วันที่</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+          )}
         </div>
 
         <div style={{ textAlign: 'center', minWidth: '200px' }}>
@@ -319,10 +323,17 @@ export default function InvoiceTemplate({
           <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
             <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
               <tbody>
-                <tr>
-                  <td>ผู้วางบิล</td>
-                  <td>วันที่</td>
-                </tr>
+              {invoice.document_type === 'invoice' && (
+                  <tr>
+                    <td>ผู้วางบิล</td>
+                    <td>วันที่</td>
+                  </tr>
+              )}
+              {invoice.document_type === 'tax_invoice' && (
+                  <tr>
+                    <td>ผู้รับมอบอำนาจ</td>
+                  </tr>
+              )}
               </tbody>
             </table>
           </div>
