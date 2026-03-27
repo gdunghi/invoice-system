@@ -52,6 +52,8 @@ export type Invoice = {
   withholding_tax_amount: number
   vat_amount: number
   total: number
+  document_type: 'invoice' | 'tax_invoice'
+  referenced_invoice_number: string | null
   notes: string | null
   status: 'draft' | 'sent' | 'paid' | 'cancelled'
   created_at: string

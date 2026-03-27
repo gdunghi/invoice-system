@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS customers (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Invoices (ใบแจ้งหนี้)
+-- Invoices (ใบแจ้งหนี้ / ใบกำกับภาษี)
 CREATE TABLE IF NOT EXISTS invoices (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   invoice_number TEXT NOT NULL UNIQUE,
@@ -48,7 +48,10 @@ CREATE TABLE IF NOT EXISTS invoices (
   subtotal NUMERIC(12, 2) DEFAULT 0,
   vat_rate NUMERIC(5, 2) DEFAULT 7,
   vat_amount NUMERIC(12, 2) DEFAULT 0,
+  withholding_tax_rate NUMERIC(5, 2) DEFAULT 3,
+  withholding_tax_amount NUMERIC(12, 2) DEFAULT 0,
   total NUMERIC(12, 2) DEFAULT 0,
+
   notes TEXT,
   status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'paid', 'cancelled')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -126,3 +129,19 @@ INSERT INTO customers (name, address, tax_id, contact_name, phone, email) VALUES
 
 ALTER TABLE invoices ADD COLUMN withholding_tax_rate NUMERIC(5,2) DEFAULT 3;
 ALTER TABLE invoices ADD COLUMN withholding_tax_amount NUMERIC(12,2) DEFAULT 0;
+
+ALTER TABLE invoices ADD COLUMN document_type TEXT DEFAULT 'invoice' CHECK (document_type IN ('invoice', 'tax_invoice'));
+ALTER TABLE invoices ADD COLUMN referenced_invoice_id UUID REFERENCES invoices(id);
+
+
+ALTER TABLE invoices
+    ADD COLUMN IF NOT EXISTS referenced_invoice_number TEXT;
+
+
+UPDATE invoices
+SET referenced_invoice_number = invoice_number::text
+WHERE referenced_invoice_number IS NULL
+  AND referenced_invoice_id IS NOT NULL;
+
+ALTER TABLE invoices
+    DROP COLUMN IF EXISTS referenced_invoice_id;

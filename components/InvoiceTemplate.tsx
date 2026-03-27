@@ -110,9 +110,11 @@ export default function InvoiceTemplate({
             lineHeight: 1.2,
             marginBottom: '2mm',
           }}>
-            ใบวางบิล/ใบแจ้งหนี้
+            {invoice.document_type === 'tax_invoice' ? 'ใบเสร็จรับเงิน/ใบกำกับภาษี' : 'ใบวางบิล/ใบแจ้งหนี้'}
           </h1>
-          <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>{copyLabel}</p>
+          <p style={{ fontSize: '10pt', color: '#7B5EA7', marginBottom: '4mm' }}>
+            {copyLabel}
+          </p>
 
           <div style={{
             borderTop: '2px solid #7B5EA7',
@@ -125,17 +127,29 @@ export default function InvoiceTemplate({
                   <td style={{ fontWeight: 600 }}>{invoice.invoice_number}</td>
                 </tr>
                 <tr>
-                  <td style={{ color: '#666', paddingBottom: '2px' }}>วันที่</td>
+                  <td style={{ color: '#666', paddingBottom: '2px' }}>
+                    {invoice.document_type === 'tax_invoice' ? 'วันที่รับเงิน' : 'วันที่' }
+                  </td>
                   <td>{formatDate(invoice.invoice_date)}</td>
                 </tr>
                 <tr>
-                  <td style={{ color: '#666', paddingBottom: '2px' }}>ครบกำหนด</td>
-                  <td>{invoice.due_date ? formatDate(invoice.due_date) : '-'}</td>
+                  <td style={{ color: '#666', paddingBottom: '2px' }}>
+                    {invoice.document_type === 'tax_invoice' ? '': 'ครบกำหนด'}
+                  </td>
+                  <td>{invoice.document_type === 'invoice' && invoice.due_date ? formatDate(invoice.due_date) : ''}</td>
                 </tr>
                 <tr>
                   <td style={{ color: '#666' }}>ผู้ขาย</td>
                   <td>{invoice.seller_name}</td>
                 </tr>
+                {invoice.document_type === 'tax_invoice' && invoice.referenced_invoice_number && (
+                    <tr>
+                      <td style={{ color: '#666', paddingTop: '4px' }}>อ้างอิงเลข Invoice</td>
+                      <td style={{ fontWeight: 600, color: '#7B5EA7', paddingTop: '4px' }}>
+                        {invoice.referenced_invoice_number}
+                      </td>
+                    </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -287,17 +301,21 @@ export default function InvoiceTemplate({
       {/* Signature section */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20mm' }}>
         <div style={{ textAlign: 'center', minWidth: '160px' }}>
-          <p style={{ fontSize: '9pt', fontWeight: 600, marginBottom: '12mm' }}>ในนาม {invoice.customer_name}</p>
-          <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
-            <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
-              <tbody>
-                <tr>
-                  <td>ผู้รับวางบิล</td>
-                  <td>วันที่</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {invoice.document_type === 'invoice' && (
+              <div>
+                <p style={{ fontSize: '9pt', fontWeight: 600, marginBottom: '12mm' }}>ในนาม {invoice.customer_name}</p>
+                <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
+                  <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
+                    <tbody>
+                    <tr>
+                      <td>ผู้รับวางบิล</td>
+                      <td>วันที่</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+          )}
         </div>
 
         <div style={{ textAlign: 'center', minWidth: '200px' }}>
@@ -305,10 +323,17 @@ export default function InvoiceTemplate({
           <div style={{ borderTop: '1px solid #333', paddingTop: '2mm' }}>
             <table style={{ width: '100%', fontSize: '8pt', color: '#666' }}>
               <tbody>
-                <tr>
-                  <td>ผู้วางบิล</td>
-                  <td>วันที่</td>
-                </tr>
+              {invoice.document_type === 'invoice' && (
+                  <tr>
+                    <td>ผู้วางบิล</td>
+                    <td>วันที่</td>
+                  </tr>
+              )}
+              {invoice.document_type === 'tax_invoice' && (
+                  <tr>
+                    <td>ผู้รับมอบอำนาจ</td>
+                  </tr>
+              )}
               </tbody>
             </table>
           </div>

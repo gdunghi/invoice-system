@@ -31,8 +31,10 @@ interface InvoiceFormData {
   contact_email: string
   vat_rate: number
   withholding_tax_rate: number
+  document_type: 'invoice' | 'tax_invoice'
   notes: string
-  status: Invoice['status']
+  status: Invoice['status'],
+  referenced_invoice_number?: string
 }
 
 const DEFAULT_COMPANY = {
@@ -46,14 +48,16 @@ const DEFAULT_COMPANY = {
 interface InvoiceFormProps {
   invoice?: Invoice
   items?: InvoiceItem[]
+  documentType: 'invoice' | 'tax_invoice'
 }
 
-export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
+export default function InvoiceForm({ invoice, items, documentType }: InvoiceFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [customers, setCustomers] = useState<Customer[]>([])
 
   const [formData, setFormData] = useState<InvoiceFormData>({
+    document_type: documentType,
     invoice_number: invoice?.invoice_number || '',
     invoice_date: invoice?.invoice_date || new Date().toISOString().split('T')[0],
     due_date: invoice?.due_date || '',
@@ -77,6 +81,7 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
     withholding_tax_rate: invoice?.withholding_tax_rate ?? 3,
     notes: invoice?.notes || '',
     status: invoice?.status || 'draft',
+    referenced_invoice_number: invoice?.referenced_invoice_number || undefined
   })
 
   const [lineItems, setLineItems] = useState<InvoiceFormItem[]>(
@@ -165,7 +170,6 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
         router.push('/')
       }
     } catch (err: any) {
-      console.error(err)
       alert('เกิดข้อผิดพลาด: ' + err.message)
     } finally {
       setSaving(false)
@@ -180,7 +184,7 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
         <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <span className="w-2 h-2 bg-[#7B5EA7] rounded-full" />
-            ข้อมูลบริษัทผู้ออก Invoice
+            ข้อมูลบริษัทผู้ออก {formData.document_type === 'tax_invoice' ? 'ใบกำกับภาษี' : 'Invoice'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
@@ -244,7 +248,7 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
         <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <span className="w-2 h-2 bg-[#7B5EA7] rounded-full" />
-            ข้อมูล Invoice
+            ข้อมูล {formData.document_type === 'tax_invoice' ? 'ใบกำกับภาษี' : 'Invoice'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {invoice && (
@@ -279,6 +283,17 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
               />
             </div>
             <div>
+              <label className="block text-sm text-gray-600 mb-1">ประเภทเอกสาร</label>
+              <select
+                value={formData.document_type}
+                onChange={e => setFormData(p => ({ ...p, document_type: e.target.value as 'invoice' | 'tax_invoice' }))}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+              >
+                <option value="invoice">ใบแจ้งหนี้ (Invoice)</option>
+                <option value="tax_invoice">ใบกำกับภาษี (Tax Invoice)</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-sm text-gray-600 mb-1">สถานะ</label>
               <select
                 value={formData.status}
@@ -290,6 +305,15 @@ export default function InvoiceForm({ invoice, items }: InvoiceFormProps) {
                 <option value="paid">ชำระแล้ว</option>
                 <option value="cancelled">ยกเลิก</option>
               </select>
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">อ้างอิง</label>
+              <input
+                  type="text"
+                  value={formData.referenced_invoice_number}
+                  onChange={e => setFormData(p => ({ ...p, referenced_invoice_number: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]"
+              />
             </div>
           </div>
         </section>
