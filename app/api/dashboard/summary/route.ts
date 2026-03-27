@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import {headers} from 'next/headers';
 
-export const dynamic = 'force-dynamic'
-
 // Mark as dynamic since we access request.headers
 export const dynamic = 'force-dynamic'
 
