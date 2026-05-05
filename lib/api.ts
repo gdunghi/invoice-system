@@ -53,7 +53,7 @@ export async function generateTaxInvoiceNumber(): Promise<string> {
     .gte('created_at', `${year}-01-01`)
     .lte('created_at', `${year}-12-31`)
 
-  const seq = ((count || 0) + 1).toString().padStart(3, '0')
+  const seq = ((count || 0) + 2).toString().padStart(3, '0')
   return `RE${year}${seq}`
 }
 

@@ -17,6 +17,7 @@ const statusConfig = {
 export default function Home() {
   const router = useRouter()
   const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [income, setIncome] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState<string | null>(null)
@@ -46,9 +47,13 @@ export default function Home() {
     try {
       setLoading(true)
       const data = await getInvoices()
-      const invoiceSent = data.filter(inv => inv.document_type === 'invoice' && inv.status === 'sent')
       const taxInvoiceSent = data.filter(inv => inv.document_type === 'tax_invoice')
-      setInvoices(invoiceSent.concat(taxInvoiceSent))
+      const taxInvoiceNumber = taxInvoiceSent.map(t => t.invoice_number)
+      const invoiceSent = data.filter(inv => inv.document_type === 'invoice').filter(inv =>{
+        return taxInvoiceNumber.indexOf(inv.invoice_number) === -1
+      })
+      setInvoices(data)
+      setIncome(invoiceSent.concat(taxInvoiceSent))
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -153,7 +158,7 @@ export default function Home() {
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <p className="text-sm text-gray-500 mb-1">ชำระแล้ว</p>
             <p className="text-2xl font-bold text-green-600">฿{formatCurrency(paidAmount)}</p>
-            <p className="text-xs text-gray-400 mt-1">{invoices.filter(inv => inv.status === 'paid').length} รายการ</p>
+            <p className="text-xs text-gray-400 mt-1">{invoices.filter(inv => inv.document_type === 'tax_invoice' && inv.status === 'paid').length} รายการ</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <p className="text-sm text-gray-500 mb-1">รอชำระ</p>
